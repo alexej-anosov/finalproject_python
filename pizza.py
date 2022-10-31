@@ -4,7 +4,7 @@ from constants import receipts_data, emojies_data
 from typing import Callable
 
 
-# from pizza_class import Pizza
+from pizza_class import Pizza
 
 
 @click.group()
@@ -16,9 +16,9 @@ def cli():
 def log(text: str) -> Callable:
     '''make logging for module's functions'''
     def decorator(func: Callable) -> Callable:
-        def wrapper(pizza, size):
+        def wrapper(pizza):
             cooking_time = randint(1, 10)
-            print(text.format(pizza, size, cooking_time))
+            print(text.format(pizza.name, pizza.size, cooking_time))
 
         return wrapper
 
@@ -26,19 +26,19 @@ def log(text: str) -> Callable:
 
 
 @log('\U0001F373 Приготовили {} {} за {}c!')
-def bake(pizza: str, size: str) -> None:
+def bake(pizza) -> None:
     '''coock pizza'''
     pass
 
 
 @log('\U0001F9BC Доставили {} {} за {}c!')
-def delivery_pizza(pizza: str, size: str) -> None:
+def delivery_pizza(pizza) -> None:
     '''delivery pizza'''
     pass
 
 
 @log('\U0001F5FF Забрали {} {} за {}c!')
-def pickup(pizza: str, size: str) -> None:
+def pickup(pizza) -> None:
     '''pickup pizza'''
     pass
 
@@ -49,11 +49,12 @@ def pickup(pizza: str, size: str) -> None:
 @click.argument('size', default='L', nargs=1)
 def order(pizza: str, size: str, delivery: bool) -> None:
     '''make and delivery'''
-    bake(pizza, size)
+    pizza_instance = Pizza(pizza, size)
+    bake(pizza_instance)
     if delivery:
-        delivery_pizza(pizza, size)
+        delivery_pizza(pizza_instance)
     else:
-        pickup(pizza, size)
+        pickup(pizza_instance)
 
 
 @cli.command()
